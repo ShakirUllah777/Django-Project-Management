@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F3EE;
+      --ink: #1A1612;
+      --rust: #C4622D;
+      --muted: #9A8F85;
+      --line: #DDD5CC;
+    }
+
+    body {
+      background-color: var(--cream);
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Left form panel */
+    .panel-left {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 64px;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .form-header {
+      margin-bottom: 44px;
+    }
+
+    .form-header .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 10px;
+    }
+
+    .form-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .field {
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .field input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.25s ease;
+    }
+
+    .field input::placeholder { color: #C5BAB2; }
+
+    .field::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--rust);
+      transition: width 0.3s ease;
+    }
+
+    .field:focus-within::after { width: 100%; }
+
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .field-row label {
+      margin-bottom: 0;
+    }
+
+    .forgot-link {
+      font-size: 11px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover { color: var(--rust); }
+
+    .btn-login {
+      width: 100%;
+      margin-top: 12px;
+      padding: 16px;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--rust);
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .btn-login:hover::before { transform: translateX(0); }
+    .btn-login:hover { transform: translateY(-1px); }
+    .btn-login span { position: relative; z-index: 1; }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 28px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .divider span {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .form-footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .form-footer a {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 1px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .form-footer a:hover { border-color: var(--rust); color: var(--rust); }
+
+    /* Right decorative panel */
+    .panel-right {
+      background-color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 56px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-right::before {
+      content: '';
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+      bottom: -100px;
+      left: -100px;
+    }
+
+    .panel-right::after {
+      content: '';
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+      top: 60px;
+      right: -60px;
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: right;
+    }
+
+    .tagline-block {
+      z-index: 1;
+    }
+
+    .tagline-block h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(42px, 5vw, 64px);
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .tagline-block h1 em {
+      font-style: italic;
+      color: var(--rust);
+    }
+
+    .tagline-block p {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 260px;
+    }
+
+    .decorative-line {
+      width: 40px;
+      height: 1px;
+      background: var(--rust);
+      margin-bottom: 28px;
+    }
+
+    .quote-block {
+      z-index: 1;
+      border-left: 1px solid var(--rust);
+      padding-left: 20px;
+    }
+
+    .quote-block blockquote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 300;
+      font-style: italic;
+      color: rgba(247, 243, 238, 0.7);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .quote-block cite {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    @media (max-width: 720px) {
+      body { grid-template-columns: 1fr; }
+      .panel-right { display: none; }
+      .panel-left { padding: 48px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left form panel -->
+  <div class="panel-left">
+    <div class="form-container">
+      <div class="form-header">
+        <p class="eyebrow">Welcome back</p>
+        <h2>Sign In</h2>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="e.g. johndoe" autocomplete="username"/>
+        </div>
+
+        <div class="field">
+          <div class="field-row">
+            <label for="password">Password</label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+          <input type="password" id="password" name="password" placeholder="Your password" autocomplete="current-password"/>
+        </div>
+
+        <button type="submit" class="btn-login"><span>Sign In</span></button>
+      </form>
+
+      <div class="divider"><span>or</span></div>
+
+      <div class="form-footer">
+        Don't have an account? <a href="/users/register/">Register now</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right decorative panel -->
+  <div class="panel-right">
+    <div class="brand">Vantage</div>
+
+    <div class="tagline-block">
+      <div class="decorative-line"></div>
+      <h1>Good to see you <em>again.</em></h1>
+      <p>Sign in to pick up right where you left off.</p>
+    </div>
+
+    <div class="quote-block">
+      <blockquote>"The secret of getting ahead is getting started."</blockquote>
+      <cite>— Mark Twain</cite>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard — Vantage</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F3EE;
+      --ink: #1A1612;
+      --rust: #C4622D;
+      --muted: #9A8F85;
+      --line: #DDD5CC;
+      --card: #FFFFFF;
+      --shadow: 0 2px 16px rgba(26,22,18,0.07);
+    }
+
+    body {
+      background-color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .topbar-greeting {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .btn-logout {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--cream);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 8px 18px;
+      transition: background 0.25s, border-color 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-logout::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--rust);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+
+    .btn-logout:hover::before { transform: translateX(0); }
+    .btn-logout:hover { border-color: var(--rust); }
+    .btn-logout span { position: relative; z-index: 1; }
+
+    /* ── Main layout ── */
+    .main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 56px 48px 80px;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      margin-bottom: 56px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .page-header .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 10px;
+    }
+
+    .page-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 300;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    .page-header h1 em {
+      font-style: italic;
+      color: var(--rust);
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 52px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .section:nth-child(2) { animation-delay: 0.1s; }
+    .section:nth-child(3) { animation-delay: 0.2s; }
+    .section:nth-child(4) { animation-delay: 0.3s; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 400;
+      color: var(--ink);
+    }
+
+    .section-count {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── Teams grid ── */
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .team-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .team-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--rust);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+
+    .team-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(26,22,18,0.11); border-color: var(--rust); }
+    .team-card:hover::before { transform: scaleY(1); }
+
+    .team-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--cream);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--rust);
+    }
+
+    .team-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    /* ── Projects grid ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 26px 28px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(26,22,18,0.11); border-color: var(--rust); }
+
+    .project-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 8px;
+    }
+
+    .project-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .project-arrow {
+      position: absolute;
+      bottom: 20px;
+      right: 22px;
+      font-size: 18px;
+      color: var(--line);
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .project-card:hover .project-arrow { color: var(--rust); transform: translate(3px, -3px); }
+
+    /* ── Tasks list ── */
+    .tasks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .task-row {
+      background: var(--card);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, border-color 0.2s;
+      gap: 16px;
+    }
+
+    .task-row:hover { border-color: var(--rust); transform: translateX(4px); }
+
+    .task-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .task-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--line);
+    }
+
+    .task-dot.done    { background: #4CAF82; }
+    .task-dot.in_progress,
+    .task-dot.in-progress { background: var(--rust); }
+    .task-dot.todo,
+    .task-dot.pending { background: var(--muted); }
+
+    .task-title {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .task-status {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .task-status.done    { background: #E8F5EE; color: #2E7D52; }
+    .task-status.in_progress,
+    .task-status.in-progress { background: #FBF0EA; color: var(--rust); }
+    .task-status.todo,
+    .task-status.pending { background: #F2EFEC; color: var(--muted); }
+
+    /* ── Empty states ── */
+    .empty {
+      padding: 32px 0;
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .topbar { padding: 0 20px; }
+      .main   { padding: 36px 20px 60px; }
+      .teams-grid, .projects-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="brand">Vantage</div>
+    <div class="topbar-right">
+      <span class="topbar-greeting">Good to see you</span>
+      <a href="/users/logout/" class="btn-logout"><span>Log out</span></a>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- Page heading -->
+    <div class="page-header">
+      <p class="eyebrow">Overview</p>
+      <h1>Your <em>Dashboard</em></h1>
+    </div>
+
+    <!-- Teams -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Teams</h2>
+        <span class="section-count">{% if teams %}{{ teams|length }} total{% endif %}</span>
+      </div>
+      {% if teams %}
+      <div class="teams-grid">
+        {% for team in teams %}
+        <div class="team-card">
+          <div class="team-icon">{{ team.team|first|upper }}</div>
+          <div class="team-name">{{ team.team }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="empty">No teams yet — you'll be added to one soon.</p>
+      {% endif %}
+    </section>
+
+    <!-- Projects -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Projects</h2>
+        <span class="section-count">{% if projects %}{{ projects|length }} total{% endif %}</span>
+      </div>
+      {% if projects %}
+      <div class="projects-grid">
+        {% for project in projects %}
+        <div class="project-card">
+          <div class="project-label">Project</div>
+          <div class="project-name">{{ project.name }}</div>
+          <div class="project-arrow">↗</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="empty">No projects assigned yet.</p>
+      {% endif %}
+    </section>
+
+    <!-- Tasks -->
+    <section class="section">
+      <div class="section-header">
+        <h2>Tasks</h2>
+        <span class="section-count">{% if tasks %}{{ tasks|length }} total{% endif %}</span>
+      </div>
+      {% if tasks %}
+      <div class="tasks-list">
+        {% for task in tasks %}
+        <div class="task-row">
+          <div class="task-left">
+            <div class="task-dot {{ task.status|lower|cut:' ' }}"></div>
+            <span class="task-title">{{ task.title }}</span>
+          </div>
+          <span class="task-status {{ task.status|lower|cut:' ' }}">{{ task.status }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="empty">No tasks assigned to you yet.</p>
+      {% endif %}
+    </section>
+
+  </main>
+
+</body>
+</html>

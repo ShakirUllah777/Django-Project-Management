@@ -21,7 +21,7 @@ class Task(models.Model):
     description = models.TextField()
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    assigend_to = models.ForeignKey(User,on_delete=models.CASCADE)
+    assigned_to = models.ForeignKey(User,on_delete=models.CASCADE)
 
     start_date = models.DateField()
     due_date = models.DateField()

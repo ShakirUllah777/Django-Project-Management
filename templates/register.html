@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F3EE;
+      --ink: #1A1612;
+      --rust: #C4622D;
+      --muted: #9A8F85;
+      --line: #DDD5CC;
+    }
+
+    body {
+      background-color: var(--cream);
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-family: 'DM Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Left panel */
+    .panel-left {
+      background-color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 56px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-left::before {
+      content: '';
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+      top: -100px;
+      right: -100px;
+    }
+
+    .panel-left::after {
+      content: '';
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+      bottom: 60px;
+      left: -60px;
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .tagline-block {
+      z-index: 1;
+    }
+
+    .tagline-block h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(42px, 5vw, 64px);
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .tagline-block h1 em {
+      font-style: italic;
+      color: var(--rust);
+    }
+
+    .tagline-block p {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.7;
+      max-width: 260px;
+    }
+
+    .decorative-line {
+      width: 40px;
+      height: 1px;
+      background: var(--rust);
+      margin-bottom: 28px;
+    }
+
+    /* Right panel */
+    .panel-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 64px;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .form-header {
+      margin-bottom: 44px;
+    }
+
+    .form-header .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 10px;
+    }
+
+    .form-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .field {
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .field input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      padding: 10px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.25s ease;
+    }
+
+    .field input::placeholder { color: #C5BAB2; }
+
+    .field input:focus {
+      border-bottom-color: var(--rust);
+    }
+
+    .field::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--rust);
+      transition: width 0.3s ease;
+    }
+
+    .field:focus-within::after { width: 100%; }
+
+    .btn-register {
+      width: 100%;
+      margin-top: 12px;
+      padding: 16px;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.15s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-register::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--rust);
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .btn-register:hover::before { transform: translateX(0); }
+    .btn-register:hover { transform: translateY(-1px); }
+    .btn-register span { position: relative; z-index: 1; }
+
+    .form-footer {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .form-footer a {
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 1px;
+      transition: border-color 0.2s;
+    }
+
+    .form-footer a:hover { border-color: var(--rust); color: var(--rust); }
+
+    @media (max-width: 720px) {
+      body { grid-template-columns: 1fr; }
+      .panel-left { display: none; }
+      .panel-right { padding: 48px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left decorative panel -->
+  <div class="panel-left">
+    <div class="brand">Vantage</div>
+    <div class="tagline-block">
+      <div class="decorative-line"></div>
+      <h1>Begin your <em>journey</em> here.</h1>
+      <p>Create an account and step into a space built around your ambitions.</p>
+    </div>
+    <div style="color: var(--muted); font-size: 12px;">© 2026 Vantage. All rights reserved.</div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="panel-right">
+    <div class="form-container">
+      <div class="form-header">
+        <p class="eyebrow">Get started</p>
+        <h2>Create Account</h2>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="e.g. johndoe" autocomplete="username"/>
+        </div>
+
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email"/>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Min. 8 characters" autocomplete="new-password"/>
+        </div>
+
+        <button type="submit" class="btn-register"><span>Create Account</span></button>
+      </form>
+
+      <div class="form-footer">
+        Already have an account? <a href="/users/login/">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
