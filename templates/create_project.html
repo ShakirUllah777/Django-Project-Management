@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Project — Vantage</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F3EE;
+      --ink: #1A1612;
+      --rust: #C4622D;
+      --muted: #9A8F85;
+      --line: #DDD5CC;
+      --card: #FFFFFF;
+      --shadow: 0 2px 16px rgba(26,22,18,0.07);
+      --green: #2E7D52;
+      --green-bg: #E8F5EE;
+    }
+
+    body {
+      background-color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+
+    .nav-links a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a.active {
+      color: var(--cream);
+      border-bottom: 1px solid var(--rust);
+      padding-bottom: 2px;
+    }
+
+    /* ── Main ── */
+    .main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 52px 48px 80px;
+    }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 44px;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .breadcrumb a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--rust); }
+    .breadcrumb-sep { font-size: 12px; color: var(--line); }
+    .breadcrumb-cur { font-size: 12px; color: var(--ink); font-weight: 500; }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 56px;
+      align-items: start;
+    }
+
+    /* ── Form panel ── */
+    .form-panel { animation: fadeUp 0.5s ease 0.1s both; }
+
+    .form-header { margin-bottom: 40px; }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 10px;
+    }
+
+    .form-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 300;
+      line-height: 1.1;
+    }
+
+    .form-header h1 em { font-style: italic; color: var(--rust); }
+
+    .form-header p {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── Section ── */
+    .form-section { margin-bottom: 36px; }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* ── Field ── */
+    .field {
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .field label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .required-star { color: var(--rust); font-size: 14px; line-height: 1; }
+
+    .field input[type="text"],
+    .field textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      padding: 11px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink);
+      outline: none;
+      resize: none;
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder { color: #C5BAB2; }
+
+    .field input[type="date"] {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      padding: 11px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink);
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+
+    .field input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0.4;
+      cursor: pointer;
+      filter: invert(0.4);
+    }
+
+    .field input[type="date"]:focus::-webkit-calendar-picker-indicator {
+      filter: invert(0) sepia(1) saturate(2) hue-rotate(340deg);
+      opacity: 0.8;
+    }
+
+    .field::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--rust);
+      transition: width 0.35s ease;
+    }
+
+    .field:focus-within::after { width: 100%; }
+
+    .field-meta { display: flex; justify-content: flex-end; margin-top: 6px; }
+
+    .char-count { font-size: 11px; color: var(--line); transition: color 0.2s; }
+    .char-count.warn { color: var(--rust); }
+
+    /* Select */
+    .select-wrap { position: relative; }
+
+    .select-wrap select {
+      width: 100%;
+      appearance: none;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      padding: 11px 32px 11px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .select-wrap select option { background: var(--card); color: var(--ink); }
+
+    .sel-arrow {
+      position: absolute;
+      right: 0; bottom: 13px;
+      pointer-events: none;
+      color: var(--muted);
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .select-wrap:focus-within .sel-arrow { transform: rotate(180deg); color: var(--rust); }
+
+    /* Color swatches */
+    .swatch-row { display: flex; gap: 10px; margin-top: 4px; }
+
+    .swatch {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.15s;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .swatch:hover { transform: scale(1.15); }
+
+    .swatch.on {
+      border-color: var(--ink);
+      transform: scale(1.12);
+    }
+
+    .swatch.on::after {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+    }
+
+    /* ── Submit area ── */
+    .submit-area {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-top: 8px;
+    }
+
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 16px 36px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--rust);
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .btn-submit:hover::before { transform: translateX(0); }
+    .btn-submit:hover { transform: translateY(-2px); }
+    .btn-submit span, .btn-submit svg { position: relative; z-index: 1; }
+
+    .btn-cancel {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-cancel:hover { color: var(--ink); border-color: var(--line); }
+
+    /* ── Right panel ── */
+    .right-panel {
+      animation: fadeUp 0.5s ease 0.2s both;
+      position: sticky;
+      top: 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Preview card */
+    .preview-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: border-color 0.3s;
+    }
+
+    .preview-card.live { border-color: var(--rust); }
+
+    .preview-band { height: 3px; background: var(--line); transition: background 0.3s; }
+    .preview-card.live .preview-band { background: var(--rust); }
+
+    .preview-inner { padding: 24px 26px 20px; }
+
+    .preview-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .preview-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .p-icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--rust);
+      background: var(--cream);
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .preview-card.live .p-icon { background: #FBF0EA; }
+
+    .p-status {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .p-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .p-name.ph { color: var(--line); font-style: italic; }
+
+    .p-team {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .p-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--rust); flex-shrink: 0; }
+
+    .p-dates { display: flex; gap: 8px; margin-bottom: 16px; }
+
+    .p-date-chip {
+      flex: 1;
+      background: var(--cream);
+      padding: 8px 10px;
+    }
+
+    .p-date-chip-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .p-date-chip-val { font-size: 12px; font-weight: 400; color: var(--ink); }
+    .p-date-chip-val.ph { color: var(--line); font-style: italic; }
+
+    .p-progress-track { height: 2px; background: var(--line); }
+    .p-progress-fill  { height: 100%; width: 0; background: var(--rust); }
+
+    .preview-footer { display: flex; border-top: 1px solid var(--line); margin-top: 16px; }
+
+    .pf-action {
+      flex: 1;
+      padding: 11px 8px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-right: 1px solid var(--line);
+    }
+
+    .pf-action:last-child { border-right: none; }
+    .pf-action.primary { color: var(--rust); }
+
+    /* Tips box */
+    .tips-box { background: var(--ink); padding: 24px 26px; }
+
+    .tips-title {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 18px;
+    }
+
+    .tip { display: flex; gap: 12px; margin-bottom: 13px; }
+    .tip:last-child { margin-bottom: 0; }
+
+    .tip-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--rust); margin-top: 6px; flex-shrink: 0; }
+
+    .tip-text { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.6; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; gap: 48px; }
+      .right-panel { position: static; }
+    }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 0 20px; }
+      .nav-links { display: none; }
+      .main { padding: 36px 20px 60px; }
+      .field-row { grid-template-columns: 1fr; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <a href="/" class="brand">Vantage</a>
+    <nav class="nav-links">
+      <a href="/dashboard/">Dashboard</a>
+      <a href="/teams/">Teams</a>
+      <a href="/projects/" class="active">Projects</a>
+      <a href="/tasks/">Tasks</a>
+    </nav>
+  </header>
+
+  <main class="main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="/projects/">Projects</a>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-cur">Create Project</span>
+    </div>
+
+    <div class="layout">
+
+      <!-- ── Left: Form ── -->
+      <div class="form-panel">
+        <div class="form-header">
+          <p class="eyebrow">New Project</p>
+          <h1>Create a <em>Project</em></h1>
+          <p>Fill in every field below — all are required to set up your project correctly.</p>
+        </div>
+
+        <form method="post" id="projectForm">
+          {% csrf_token %}
+
+          <!-- Section 1: Basics -->
+          <div class="form-section">
+            <div class="section-label">01 — Basics</div>
+
+            <div class="field">
+              <label for="name">Project Name <span class="required-star">*</span></label>
+              <input type="text" id="name" name="name" placeholder="e.g. Website Redesign…" autocomplete="off" maxlength="80" required/>
+              <div class="field-meta">
+                <span class="char-count" id="nameCount">0 / 80</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="description">Description <span class="required-star">*</span></label>
+              <textarea id="description" name="description" rows="4" placeholder="What is this project about? Define the goals and scope…" maxlength="500" required></textarea>
+              <div class="field-meta">
+                <span class="char-count" id="descCount">0 / 500</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Team -->
+          <div class="form-section">
+            <div class="section-label">02 — Team</div>
+
+            <div class="field">
+              <label for="team">Assign to Team <span class="required-star">*</span></label>
+              <div class="select-wrap">
+                <select name="team" id="team" required>
+                  <option value="" disabled selected>Select a team…</option>
+                  {% for team in teams %}
+                  <option value="{{ team.id }}" data-name="{{ team.team_name }}">{{ team.team_name }}</option>
+                  {% endfor %}
+                </select>
+                <svg class="sel-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Timeline -->
+          <div class="form-section">
+            <div class="section-label">03 — Timeline</div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="start_date">Start Date <span class="required-star">*</span></label>
+                <input type="date" id="start_date" name="start_date" required/>
+              </div>
+              <div class="field">
+                <label for="deadline">Deadline <span class="required-star">*</span></label>
+                <input type="date" id="deadline" name="deadline" required/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Color Tag -->
+          <div class="form-section">
+            <div class="section-label">04 — Color Tag</div>
+
+            <div class="field" style="border-bottom: none;">
+              <label>Project Color <span class="required-star">*</span></label>
+              <div class="swatch-row" id="swatchRow">
+                <div class="swatch on" style="background:#C4622D;" data-color="#C4622D"></div>
+                <div class="swatch" style="background:#2E7D52;" data-color="#2E7D52"></div>
+                <div class="swatch" style="background:#1A5C8A;" data-color="#1A5C8A"></div>
+                <div class="swatch" style="background:#7B4EA6;" data-color="#7B4EA6"></div>
+                <div class="swatch" style="background:#B5880D;" data-color="#B5880D"></div>
+                <div class="swatch" style="background:#9A8F85;" data-color="#9A8F85"></div>
+              </div>
+              <input type="hidden" name="color" id="colorInput" value="#C4622D"/>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <div class="submit-area">
+            <button type="submit" class="btn-submit">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <span>Create Project</span>
+            </button>
+            <a href="/projects/" class="btn-cancel">Cancel</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- ── Right: Preview + tips ── -->
+      <div class="right-panel">
+
+        <div class="preview-card" id="previewCard">
+          <div class="preview-band" id="previewBand"></div>
+          <div class="preview-inner">
+            <div class="preview-eyebrow">Live Preview</div>
+            <div class="preview-top">
+              <div class="p-icon" id="pIcon">?</div>
+              <span class="p-status">Active</span>
+            </div>
+            <div class="p-name ph" id="pName">Project name…</div>
+            <div class="p-team">
+              <div class="p-dot" id="pDot"></div>
+              <span id="pTeam">No team selected</span>
+            </div>
+            <div class="p-dates">
+              <div class="p-date-chip">
+                <div class="p-date-chip-label">Start</div>
+                <div class="p-date-chip-val ph" id="pStart">—</div>
+              </div>
+              <div class="p-date-chip">
+                <div class="p-date-chip-label">Deadline</div>
+                <div class="p-date-chip-val ph" id="pDeadline">—</div>
+              </div>
+            </div>
+            <div class="p-progress-track"><div class="p-progress-fill"></div></div>
+          </div>
+          <div class="preview-footer">
+            <div class="pf-action primary">Open</div>
+            <div class="pf-action">Tasks</div>
+            <div class="pf-action">Edit</div>
+          </div>
+        </div>
+
+        <div class="tips-box">
+          <div class="tips-title">Tips</div>
+          <div class="tip">
+            <div class="tip-dot"></div>
+            <div class="tip-text">Choose a clear, action-oriented name your team will instantly recognise.</div>
+          </div>
+          <div class="tip">
+            <div class="tip-dot"></div>
+            <div class="tip-text">Set a realistic deadline — you can always adjust it later from the project page.</div>
+          </div>
+          <div class="tip">
+            <div class="tip-dot"></div>
+            <div class="tip-text">Color tags help visually separate projects across your dashboard and task board.</div>
+          </div>
+          <div class="tip">
+            <div class="tip-dot"></div>
+            <div class="tip-text">After creating, break the project into tasks and assign them to team members.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const nameInput  = document.getElementById('name');
+    const descInput  = document.getElementById('description');
+    const teamSel    = document.getElementById('team');
+    const startInput = document.getElementById('start_date');
+    const dlInput    = document.getElementById('deadline');
+    const swatchRow  = document.getElementById('swatchRow');
+    const colorInput = document.getElementById('colorInput');
+
+    const previewCard = document.getElementById('previewCard');
+    const previewBand = document.getElementById('previewBand');
+    const pIcon       = document.getElementById('pIcon');
+    const pName       = document.getElementById('pName');
+    const pTeam       = document.getElementById('pTeam');
+    const pDot        = document.getElementById('pDot');
+    const pStart      = document.getElementById('pStart');
+    const pDeadline   = document.getElementById('pDeadline');
+
+    let currentColor = '#C4622D';
+
+    function fmtDate(val) {
+      if (!val) return null;
+      const d = new Date(val + 'T00:00:00');
+      return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function update() {
+      const name     = nameInput.value.trim();
+      const teamOpt  = teamSel.options[teamSel.selectedIndex];
+      const teamName = teamSel.value ? teamOpt.dataset.name : null;
+      const sf       = fmtDate(startInput.value);
+      const df       = fmtDate(dlInput.value);
+
+      // Name & icon
+      if (name) {
+        pName.textContent = name;
+        pName.classList.remove('ph');
+        pIcon.textContent = name[0].toUpperCase();
+      } else {
+        pName.textContent = 'Project name…';
+        pName.classList.add('ph');
+        pIcon.textContent = '?';
+      }
+
+      // Team
+      pTeam.textContent = teamName || 'No team selected';
+
+      // Dates
+      pStart.textContent = sf || '—';
+      pStart.classList.toggle('ph', !sf);
+      pDeadline.textContent = df || '—';
+      pDeadline.classList.toggle('ph', !df);
+
+      // Active state
+      if (name || teamName) {
+        previewCard.classList.add('live');
+        previewBand.style.background = currentColor;
+        pDot.style.background = currentColor;
+        pIcon.style.color = currentColor;
+      } else {
+        previewCard.classList.remove('live');
+        previewBand.style.background = '';
+      }
+    }
+
+    // Char counters
+    nameInput.addEventListener('input', () => {
+      const len = nameInput.value.length;
+      const el = document.getElementById('nameCount');
+      el.textContent = `${len} / 80`;
+      el.classList.toggle('warn', len > 65);
+      update();
+    });
+
+    descInput.addEventListener('input', () => {
+      const len = descInput.value.length;
+      const el = document.getElementById('descCount');
+      el.textContent = `${len} / 500`;
+      el.classList.toggle('warn', len > 420);
+    });
+
+    teamSel.addEventListener('change', update);
+    startInput.addEventListener('change', update);
+    dlInput.addEventListener('change', update);
+
+    // Deadline can't be before start
+    startInput.addEventListener('change', () => {
+      dlInput.min = startInput.value;
+      update();
+    });
+
+    // Color swatches
+    swatchRow.querySelectorAll('.swatch').forEach(s => {
+      s.addEventListener('click', () => {
+        swatchRow.querySelectorAll('.swatch').forEach(x => x.classList.remove('on'));
+        s.classList.add('on');
+        currentColor = s.dataset.color;
+        colorInput.value = currentColor;
+        update();
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -7,6 +7,10 @@ from teams.models import TeamMember
 from tasks.models import Task
 
 
+def home(request):
+    return render(request, "home.html")
+
+
 def register(request):
 
     if request.method == "POST":

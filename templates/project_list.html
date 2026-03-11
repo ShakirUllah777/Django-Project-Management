@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projects — Vantage</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F3EE;
+      --ink: #1A1612;
+      --rust: #C4622D;
+      --muted: #9A8F85;
+      --line: #DDD5CC;
+      --card: #FFFFFF;
+      --shadow: 0 2px 16px rgba(26,22,18,0.07);
+    }
+
+    body {
+      background-color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+
+    .nav-links a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a.active {
+      color: var(--cream);
+      border-bottom: 1px solid var(--rust);
+      padding-bottom: 2px;
+    }
+
+    /* ── Main ── */
+    .main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 56px 48px 80px;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 10px;
+    }
+
+    .page-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 300;
+      line-height: 1.1;
+    }
+
+    .page-header h1 em { font-style: italic; color: var(--rust); }
+
+    /* ── Create button ── */
+    .btn-create {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ink);
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 14px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-create::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--rust);
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .btn-create:hover::before { transform: translateX(0); }
+    .btn-create:hover { transform: translateY(-2px); }
+    .btn-create span, .btn-create svg { position: relative; z-index: 1; }
+
+    /* ── Stats bar ── */
+    .stats-bar {
+      display: flex;
+      gap: 1px;
+      margin-bottom: 40px;
+      animation: fadeUp 0.5s ease 0.08s both;
+    }
+
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 20px 32px;
+      flex: 1;
+    }
+
+    .stat-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      animation: fadeUp 0.5s ease 0.13s both;
+    }
+
+    .toolbar-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 10px 16px;
+      max-width: 300px;
+      flex: 1;
+      transition: border-color 0.25s;
+    }
+
+    .search-box:focus-within { border-color: var(--rust); }
+    .search-box svg { color: var(--muted); flex-shrink: 0; }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--ink);
+      width: 100%;
+    }
+
+    .search-box input::placeholder { color: #C5BAB2; }
+
+    /* Filter pills */
+    .filter-pills { display: flex; gap: 6px; }
+
+    .filter-pill {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .filter-pill:hover { border-color: var(--muted); color: var(--ink); }
+    .filter-pill.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+    /* View toggle */
+    .view-toggle { display: flex; gap: 1px; }
+
+    .view-btn {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 10px 13px;
+      cursor: pointer;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .view-btn.active, .view-btn:hover {
+      background: var(--ink);
+      color: var(--cream);
+      border-color: var(--ink);
+    }
+
+    /* ── Grid view ── */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── List view ── */
+    .projects-list { display: flex; flex-direction: column; gap: 8px; }
+
+    /* ── Project card ── */
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .project-card:nth-child(1) { animation-delay: 0.18s; }
+    .project-card:nth-child(2) { animation-delay: 0.24s; }
+    .project-card:nth-child(3) { animation-delay: 0.30s; }
+    .project-card:nth-child(4) { animation-delay: 0.36s; }
+    .project-card:nth-child(5) { animation-delay: 0.42s; }
+    .project-card:nth-child(6) { animation-delay: 0.48s; }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 40px rgba(26,22,18,0.13);
+      border-color: var(--rust);
+    }
+
+    .card-band { height: 3px; background: var(--line); transition: background 0.3s; }
+    .project-card:hover .card-band { background: var(--rust); }
+
+    .card-body { padding: 26px 26px 20px; }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .project-initial {
+      width: 46px;
+      height: 46px;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--rust);
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .project-card:hover .project-initial { background: #FBF0EA; }
+
+    .status-pill {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+    }
+
+    .pill-active   { background: #E8F5EE; color: #2E7D52; }
+    .pill-progress { background: #FBF0EA; color: var(--rust); }
+    .pill-planning { background: #F2EFEC; color: var(--muted); }
+
+    .project-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 21px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .project-team-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--muted);
+    }
+
+    .team-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--rust);
+      flex-shrink: 0;
+    }
+
+    /* Progress bar */
+    .card-progress { margin-top: 18px; }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .progress-lbl {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .progress-track { height: 2px; background: var(--line); }
+    .progress-fill  { height: 100%; background: var(--rust); width: 0; transition: width 0.6s ease; }
+
+    /* Card footer */
+    .card-footer { display: flex; border-top: 1px solid var(--line); margin-top: 18px; }
+
+    .c-action {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 13px 8px;
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-right: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+      transition: color 0.2s;
+    }
+
+    .c-action:last-child { border-right: none; }
+
+    .c-action::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--rust);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .c-action:hover::before { opacity: 1; }
+    .c-action:hover { color: var(--cream); }
+    .c-action span, .c-action svg { position: relative; z-index: 1; }
+    .c-action.primary { color: var(--rust); }
+    .c-action.primary:hover { color: var(--cream); }
+
+    /* ── List row ── */
+    .project-row {
+      background: var(--card);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 16px 24px;
+      box-shadow: var(--shadow);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.2s;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .project-row:hover { border-color: var(--rust); transform: translateX(4px); }
+
+    .row-initial {
+      width: 36px;
+      height: 36px;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--rust);
+      flex-shrink: 0;
+    }
+
+    .row-body { flex: 1; min-width: 0; }
+
+    .row-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--ink);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .row-team {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .row-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+
+    .row-arrow { font-size: 16px; color: var(--line); transition: color 0.2s, transform 0.2s; }
+    .project-row:hover .row-arrow { color: var(--rust); transform: translate(3px,-3px); }
+
+    /* ── Empty state ── */
+    .empty-wrap {
+      grid-column: 1/-1;
+      background: var(--card);
+      border: 1px dashed var(--line);
+      padding: 80px 40px;
+      text-align: center;
+      animation: fadeUp 0.5s ease 0.2s both;
+    }
+
+    .empty-wrap .empty-ico { font-size: 38px; opacity: 0.2; margin-bottom: 20px; }
+
+    .empty-wrap h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .empty-wrap p { font-size: 13px; font-weight: 300; color: var(--muted); margin-bottom: 32px; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 760px) {
+      .topbar { padding: 0 20px; }
+      .nav-links { display: none; }
+      .main { padding: 36px 20px 60px; }
+      .page-header { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .stats-bar { flex-direction: column; gap: 8px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .toolbar { flex-wrap: wrap; }
+      .filter-pills { display: none; }
+      .search-box { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <a href="/" class="brand">Vantage</a>
+    <nav class="nav-links">
+      <a href="/dashboard/">Dashboard</a>
+      <a href="/teams/">Teams</a>
+      <a href="/projects/" class="active">Projects</a>
+      <a href="/tasks/">Tasks</a>
+    </nav>
+  </header>
+
+  <main class="main">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div>
+        <p class="eyebrow">Workspace</p>
+        <h1>Your <em>Projects</em></h1>
+      </div>
+      <a href="/projects/create/" class="btn-create">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+          <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>New Project</span>
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-value" id="statTotal">{% if projects %}{{ projects|length }}{% else %}0{% endif %}</div>
+        <div class="stat-label">Total Projects</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">—</div>
+        <div class="stat-label">In Progress</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">—</div>
+        <div class="stat-label">Completed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">—</div>
+        <div class="stat-label">Open Tasks</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Search projects or teams…"/>
+        </div>
+        <div class="filter-pills">
+          <button class="filter-pill active" data-filter="all">All</button>
+          <button class="filter-pill" data-filter="active">Active</button>
+          <button class="filter-pill" data-filter="progress">In Progress</button>
+          <button class="filter-pill" data-filter="planning">Planning</button>
+        </div>
+      </div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="gridBtn" title="Grid">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <rect x="1" y="1" width="5" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/>
+            <rect x="8" y="1" width="5" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/>
+            <rect x="1" y="8" width="5" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/>
+            <rect x="8" y="8" width="5" height="5" rx="0.5" stroke="currentColor" stroke-width="1.3"/>
+          </svg>
+        </button>
+        <button class="view-btn" id="listBtn" title="List">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 3h12M1 7h12M1 11h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid view -->
+    <div id="gridView">
+      {% if projects %}
+      <div class="projects-grid" id="gridInner">
+        {% for project in projects %}
+        <div class="project-card" data-name="{{ project.name|lower }}" data-team="{{ project.team|lower }}" data-status="active">
+          <div class="card-band"></div>
+          <div class="card-body">
+            <div class="card-top">
+              <div class="project-initial">{{ project.name|first|upper }}</div>
+              <span class="status-pill pill-active">Active</span>
+            </div>
+            <div class="project-name">{{ project.name }}</div>
+            <div class="project-team-tag">
+              <div class="team-dot"></div>
+              {{ project.team }}
+            </div>
+            <div class="card-progress">
+              <div class="progress-head">
+                <span class="progress-lbl">Progress</span>
+                <span class="progress-lbl">—</span>
+              </div>
+              <div class="progress-track"><div class="progress-fill"></div></div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <a href="/projects/{{ project.id }}/" class="c-action primary">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path d="M2 8L8 2M8 2H3M8 2v5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Open</span>
+            </a>
+            <a href="/tasks/?project={{ project.id }}" class="c-action">
+              <span>Tasks</span>
+            </a>
+            <a href="/projects/{{ project.id }}/edit/" class="c-action">
+              <span>Edit</span>
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="projects-grid">
+        <div class="empty-wrap">
+          <div class="empty-ico">◎</div>
+          <h3>No projects yet</h3>
+          <p>Create your first project to start tracking work.</p>
+          <a href="/projects/create/" class="btn-create">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span>New Project</span>
+          </a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- List view -->
+    <div id="listView" style="display:none;">
+      {% if projects %}
+      <div class="projects-list" id="listInner">
+        {% for project in projects %}
+        <a href="/projects/{{ project.id }}/" class="project-row" data-name="{{ project.name|lower }}" data-team="{{ project.team|lower }}" data-status="active">
+          <div class="row-initial">{{ project.name|first|upper }}</div>
+          <div class="row-body">
+            <div class="row-name">{{ project.name }}</div>
+            <div class="row-team">{{ project.team }}</div>
+          </div>
+          <div class="row-right">
+            <span class="status-pill pill-active">Active</span>
+            <span class="row-arrow">↗</span>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+  </main>
+
+  <script>
+    // ── View toggle ──
+    const gridBtn  = document.getElementById('gridBtn');
+    const listBtn  = document.getElementById('listBtn');
+    const gridView = document.getElementById('gridView');
+    const listView = document.getElementById('listView');
+
+    gridBtn.addEventListener('click', () => {
+      gridView.style.display = '';
+      listView.style.display = 'none';
+      gridBtn.classList.add('active');
+      listBtn.classList.remove('active');
+    });
+
+    listBtn.addEventListener('click', () => {
+      gridView.style.display = 'none';
+      listView.style.display = '';
+      listBtn.classList.add('active');
+      gridBtn.classList.remove('active');
+    });
+
+    // ── Search ──
+    document.getElementById('searchInput').addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      document.querySelectorAll('.project-card, .project-row').forEach(el => {
+        const match = el.dataset.name.includes(q) || el.dataset.team.includes(q);
+        el.style.display = match ? '' : 'none';
+      });
+    });
+
+    // ── Filter pills ──
+    document.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', function () {
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+        const f = this.dataset.filter;
+        document.querySelectorAll('.project-card, .project-row').forEach(el => {
+          el.style.display = (f === 'all' || el.dataset.status === f) ? '' : 'none';
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

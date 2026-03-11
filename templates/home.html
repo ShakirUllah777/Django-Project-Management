@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vantage — Project Management</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F3EE;
+      --ink: #1A1612;
+      --rust: #C4622D;
+      --muted: #9A8F85;
+      --line: #DDD5CC;
+      --card: #FFFFFF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════
+       TOPBAR
+    ══════════════════════════════ */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 56px;
+      height: 68px;
+      background: rgba(26,22,18,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--cream);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .brand span { color: var(--rust); }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .nav-center a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(247,243,238,0.5);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-center a:hover { color: var(--cream); }
+
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+
+    .btn-nav-ghost {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(247,243,238,0.6);
+      text-decoration: none;
+      padding: 8px 18px;
+      border: 1px solid rgba(255,255,255,0.15);
+      transition: all 0.2s;
+    }
+
+    .btn-nav-ghost:hover { color: var(--cream); border-color: rgba(255,255,255,0.4); }
+
+    .btn-nav-solid {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cream);
+      text-decoration: none;
+      padding: 9px 22px;
+      background: var(--rust);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s;
+    }
+
+    .btn-nav-solid::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #A8521E;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+
+    .btn-nav-solid:hover::before { transform: translateX(0); }
+    .btn-nav-solid:hover { transform: translateY(-1px); }
+    .btn-nav-solid span { position: relative; z-index: 1; }
+
+    /* ══════════════════════════════
+       HERO
+    ══════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 68px;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 72px 80px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative circles */
+    .hero-left::before {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.04);
+      top: -150px; right: -150px;
+      pointer-events: none;
+    }
+
+    .hero-left::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.04);
+      bottom: 40px; left: -80px;
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-eyebrow-line {
+      width: 32px; height: 1px;
+      background: var(--rust);
+    }
+
+    .hero-eyebrow span {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--rust);
+    }
+
+    .hero-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(48px, 5.5vw, 76px);
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.05;
+      margin-bottom: 28px;
+      animation: fadeUp 0.6s ease 0.1s both;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-heading em {
+      font-style: italic;
+      color: var(--rust);
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(247,243,238,0.55);
+      line-height: 1.8;
+      max-width: 380px;
+      margin-bottom: 48px;
+      animation: fadeUp 0.6s ease 0.2s both;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      animation: fadeUp 0.6s ease 0.3s both;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--rust);
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 18px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s;
+    }
+
+    .btn-hero-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #A8521E;
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .btn-hero-primary:hover::before { transform: translateX(0); }
+    .btn-hero-primary:hover { transform: translateY(-2px); }
+    .btn-hero-primary span, .btn-hero-primary svg { position: relative; z-index: 1; }
+
+    .btn-hero-ghost {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(247,243,238,0.5);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(247,243,238,0.2);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-hero-ghost:hover { color: var(--cream); border-color: var(--cream); }
+
+    /* Hero stats row */
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      animation: fadeUp 0.6s ease 0.4s both;
+      position: relative;
+      z-index: 1;
+    }
+
+    .h-stat-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 36px;
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .h-stat-val span { color: var(--rust); }
+
+    .h-stat-lbl {
+      font-size: 11px;
+      font-weight: 400;
+      color: rgba(247,243,238,0.35);
+      letter-spacing: 0.06em;
+    }
+
+    /* Hero right — visual dashboard mockup */
+    .hero-right {
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 48px 80px;
+      position: relative;
+    }
+
+    .dashboard-mockup {
+      width: 100%;
+      max-width: 480px;
+      animation: floatUp 0.8s ease 0.3s both;
+    }
+
+    @keyframes floatUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Mini topbar */
+    .mock-topbar {
+      background: var(--ink);
+      height: 36px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .mock-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .mock-brand-txt {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--cream);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Mock stats */
+    .mock-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .mock-stat {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+    }
+
+    .mock-stat-val {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .mock-stat-lbl {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Mock task rows */
+    .mock-section-title {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .mock-tasks { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+
+    .mock-task {
+      background: var(--card);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+    }
+
+    .mock-indicator { width: 3px; height: 24px; border-radius: 2px; flex-shrink: 0; }
+
+    .mock-task-title {
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--ink);
+      flex: 1;
+    }
+
+    .mock-badge {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+    }
+
+    /* Mock project cards */
+    .mock-projects { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+    .mock-project {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mock-project::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+
+    .mock-project-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    .mock-project-team {
+      font-size: 8px;
+      font-weight: 300;
+      color: var(--muted);
+    }
+
+    /* Floating accent cards */
+    .float-card {
+      position: absolute;
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 32px rgba(26,22,18,0.12);
+      padding: 12px 16px;
+      animation: gentleFloat 4s ease-in-out infinite;
+    }
+
+    @keyframes gentleFloat {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .float-card-1 {
+      top: 120px; right: 20px;
+      min-width: 140px;
+      animation-delay: 0s;
+    }
+
+    .float-card-2 {
+      bottom: 120px; left: 12px;
+      min-width: 120px;
+      animation-delay: 1.5s;
+    }
+
+    .fc-label {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .fc-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--ink);
+    }
+
+    .fc-sub { font-size: 9px; font-weight: 300; color: var(--muted); margin-top: 2px; }
+
+    /* ══════════════════════════════
+       FEATURES SECTION
+    ══════════════════════════════ */
+    .features {
+      padding: 120px 56px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: end;
+      margin-bottom: 72px;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 14px;
+    }
+
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 4vw, 52px);
+      font-weight: 300;
+      line-height: 1.1;
+    }
+
+    .section-heading em { font-style: italic; color: var(--rust); }
+
+    .section-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 380px;
+      align-self: end;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 36px 32px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--rust);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(26,22,18,0.1); border-color: var(--rust); }
+    .feature-card:hover::before { transform: scaleX(1); }
+
+    .feature-icon {
+      width: 48px; height: 48px;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 22px;
+      transition: background 0.2s;
+    }
+
+    .feature-card:hover .feature-icon { background: #FBF0EA; }
+
+    .feature-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ══════════════════════════════
+       HOW IT WORKS
+    ══════════════════════════════ */
+    .how-section {
+      background: var(--ink);
+      padding: 120px 56px;
+    }
+
+    .how-inner { max-width: 1200px; margin: 0 auto; }
+
+    .how-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .how-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 14px;
+    }
+
+    .how-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 4vw, 52px);
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.1;
+    }
+
+    .how-heading em { font-style: italic; color: var(--rust); }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      position: relative;
+    }
+
+    /* Connector line */
+    .steps-grid::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(12.5% + 12px);
+      right: calc(12.5% + 12px);
+      height: 1px;
+      background: rgba(196,98,45,0.3);
+      z-index: 0;
+    }
+
+    .step-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 32px 28px;
+      position: relative;
+      z-index: 1;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .step-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(196,98,45,0.4); }
+
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      color: var(--rust);
+      line-height: 1;
+      margin-bottom: 20px;
+      opacity: 0.8;
+    }
+
+    .step-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(247,243,238,0.4);
+      line-height: 1.7;
+    }
+
+    /* ══════════════════════════════
+       PAGES PREVIEW SECTION
+    ══════════════════════════════ */
+    .pages-section {
+      padding: 120px 56px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .pages-header {
+      margin-bottom: 56px;
+    }
+
+    .pages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .page-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      display: block;
+    }
+
+    .page-card:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(26,22,18,0.1); border-color: var(--rust); }
+
+    .page-card-band { height: 3px; background: var(--line); transition: background 0.3s; }
+    .page-card:hover .page-card-band { background: var(--rust); }
+
+    .page-card-body { padding: 24px; }
+
+    .page-card-icon {
+      width: 40px; height: 40px;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .page-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .page-card-url {
+      font-size: 11px;
+      font-weight: 300;
+      color: var(--muted);
+      font-family: monospace;
+      letter-spacing: 0.04em;
+    }
+
+    .page-card-footer {
+      border-top: 1px solid var(--line);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .page-card-tag {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+    }
+
+    .tag-auth    { background: #FBF0EA; color: var(--rust); }
+    .tag-main    { background: var(--green-bg, #E8F5EE); color: #2E7D52; }
+    .tag-free    { background: #F2EFEC; color: var(--muted); }
+
+    .page-arrow { font-size: 14px; color: var(--line); transition: color 0.2s, transform 0.2s; }
+    .page-card:hover .page-arrow { color: var(--rust); transform: translate(3px,-3px); }
+
+    /* ══════════════════════════════
+       CTA BANNER
+    ══════════════════════════════ */
+    .cta-section {
+      background: var(--ink);
+      padding: 100px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.03);
+      top: -200px; right: -100px;
+    }
+
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.03);
+      bottom: -150px; left: -100px;
+    }
+
+    .cta-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 16px;
+    }
+
+    .cta-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 300;
+      color: var(--cream);
+      line-height: 1.1;
+    }
+
+    .cta-heading em { font-style: italic; color: var(--rust); }
+
+    .cta-sub {
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(247,243,238,0.45);
+      line-height: 1.7;
+      max-width: 420px;
+    }
+
+    .cta-buttons { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; flex-shrink: 0; }
+
+    .btn-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--rust);
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 18px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-cta-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #A8521E;
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .btn-cta-primary:hover::before { transform: translateX(0); }
+    .btn-cta-primary:hover { transform: translateY(-2px); }
+    .btn-cta-primary span, .btn-cta-primary svg { position: relative; z-index: 1; }
+
+    .btn-cta-ghost {
+      font-size: 12px;
+      font-weight: 400;
+      color: rgba(247,243,238,0.4);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      border-bottom: 1px solid rgba(247,243,238,0.15);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-cta-ghost:hover { color: var(--cream); border-color: rgba(247,243,238,0.4); }
+
+    /* ══════════════════════════════
+       FOOTER
+    ══════════════════════════════ */
+    .footer {
+      background: #111109;
+      padding: 48px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .footer-brand span { color: var(--rust); }
+
+    .footer-links { display: flex; gap: 28px; flex-wrap: wrap; }
+
+    .footer-links a {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(247,243,238,0.3);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: rgba(247,243,238,0.7); }
+
+    .footer-copy {
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(247,243,238,0.2);
+    }
+
+    /* ══════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Stagger children */
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal-stagger.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:0s; }
+    .reveal-stagger.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay:0.1s; }
+    .reveal-stagger.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay:0.2s; }
+    .reveal-stagger.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:0.3s; }
+    .reveal-stagger.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:0.4s; }
+    .reveal-stagger.visible > *:nth-child(6) { opacity:1; transform:none; transition-delay:0.5s; }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 80px 40px; min-height: calc(100vh - 68px); }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .steps-grid { grid-template-columns: 1fr 1fr; }
+      .steps-grid::before { display: none; }
+      .pages-grid { grid-template-columns: 1fr 1fr; }
+      .cta-inner { grid-template-columns: 1fr; }
+      .cta-buttons { align-items: flex-start; flex-direction: row; }
+    }
+
+    @media (max-width: 720px) {
+      .topbar { padding: 0 20px; }
+      .nav-center { display: none; }
+      .features { padding: 80px 24px; }
+      .section-header { grid-template-columns: 1fr; gap: 20px; }
+      .features-grid { grid-template-columns: 1fr; }
+      .how-section { padding: 80px 24px; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .pages-section { padding: 80px 24px; }
+      .pages-grid { grid-template-columns: 1fr; }
+      .cta-section { padding: 80px 24px; }
+      .cta-buttons { flex-direction: column; align-items: flex-start; }
+      .footer { padding: 40px 24px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Topbar ── -->
+  <header class="topbar">
+    <a href="/" class="brand">Van<span>tage</span></a>
+    <nav class="nav-center">
+      <a href="#features">Features</a>
+      <a href="#how">How it Works</a>
+      <a href="#pages">Pages</a>
+    </nav>
+    <div class="nav-right">
+      <a href="/users/login/" class="btn-nav-ghost">Sign In</a>
+      <a href="/users/register/" class="btn-nav-solid"><span>Get Started</span></a>
+    </div>
+  </header>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        <span>Project Management</span>
+      </div>
+      <h1 class="hero-heading">
+        Manage work<br>with <em>clarity</em><br>and precision.
+      </h1>
+      <p class="hero-sub">
+        Vantage brings your teams, projects, and tasks into one refined workspace. No noise — just the focus your team needs to ship.
+      </p>
+      <div class="hero-ctas">
+        <a href="/users/register/" class="btn-hero-primary">
+          <span>Start for Free</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="/users/login/" class="btn-hero-ghost">Sign in instead</a>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="h-stat-val">3<span>+</span></div>
+          <div class="h-stat-lbl">Modules</div>
+        </div>
+        <div>
+          <div class="h-stat-val">∞</div>
+          <div class="h-stat-lbl">Tasks</div>
+        </div>
+        <div>
+          <div class="h-stat-val">1<span>×</span></div>
+          <div class="h-stat-lbl">Workspace</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard visual mockup -->
+    <div class="hero-right">
+
+      <!-- Floating cards -->
+      <div class="float-card float-card-1">
+        <div class="fc-label">Tasks Done</div>
+        <div class="fc-value" style="color:var(--green,#2E7D52);">12</div>
+        <div class="fc-sub">This week ↑ 3</div>
+      </div>
+
+      <div class="float-card float-card-2">
+        <div class="fc-label">Active Projects</div>
+        <div class="fc-value">4</div>
+        <div class="fc-sub">Across 2 teams</div>
+      </div>
+
+      <div class="dashboard-mockup">
+        <!-- Mini topbar -->
+        <div class="mock-topbar">
+          <div class="mock-dot" style="background:#C4622D;"></div>
+          <div class="mock-dot" style="background:#B5880D;opacity:0.6;"></div>
+          <div class="mock-dot" style="background:#2E7D52;opacity:0.6;"></div>
+          <div class="mock-brand-txt">Vantage</div>
+        </div>
+
+        <!-- Stats -->
+        <div class="mock-stats">
+          <div class="mock-stat">
+            <div class="mock-stat-val">6</div>
+            <div class="mock-stat-lbl">Teams</div>
+          </div>
+          <div class="mock-stat">
+            <div class="mock-stat-val" style="color:var(--rust);">4</div>
+            <div class="mock-stat-lbl">Projects</div>
+          </div>
+          <div class="mock-stat">
+            <div class="mock-stat-val">18</div>
+            <div class="mock-stat-lbl">Tasks</div>
+          </div>
+          <div class="mock-stat">
+            <div class="mock-stat-val" style="color:#2E7D52;">12</div>
+            <div class="mock-stat-lbl">Done</div>
+          </div>
+        </div>
+
+        <!-- Tasks -->
+        <div class="mock-section-title">Recent Tasks</div>
+        <div class="mock-tasks">
+          <div class="mock-task">
+            <div class="mock-indicator" style="background:#2E7D52;"></div>
+            <span class="mock-task-title">Design system tokens</span>
+            <span class="mock-badge" style="background:#E8F5EE;color:#2E7D52;">Done</span>
+          </div>
+          <div class="mock-task">
+            <div class="mock-indicator" style="background:var(--rust);"></div>
+            <span class="mock-task-title">API integration</span>
+            <span class="mock-badge" style="background:#FBF0EA;color:var(--rust);">Progress</span>
+          </div>
+          <div class="mock-task">
+            <div class="mock-indicator" style="background:var(--muted);"></div>
+            <span class="mock-task-title">Write release notes</span>
+            <span class="mock-badge" style="background:#F2EFEC;color:var(--muted);">To Do</span>
+          </div>
+        </div>
+
+        <!-- Projects -->
+        <div class="mock-section-title">Projects</div>
+        <div class="mock-projects">
+          <div class="mock-project">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--rust);"></div>
+            <div class="mock-project-name">Website Redesign</div>
+            <div class="mock-project-team">Design Team</div>
+          </div>
+          <div class="mock-project">
+            <div style="position:absolute;top:0;left:0;right:0;height:2px;background:#2E7D52;"></div>
+            <div class="mock-project-name">Mobile App v2</div>
+            <div class="mock-project-team">Engineering</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Features ── -->
+  <section class="features" id="features">
+    <div class="section-header reveal">
+      <div>
+        <p class="section-eyebrow">What's inside</p>
+        <h2 class="section-heading">Everything your<br>team <em>needs</em></h2>
+      </div>
+      <p class="section-desc">From spinning up a team to shipping tasks — Vantage covers the entire project lifecycle in a single, focused workspace.</p>
+    </div>
+
+    <div class="features-grid reveal-stagger">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <circle cx="11" cy="8" r="3.5" stroke="#C4622D" stroke-width="1.5"/>
+            <path d="M4 19c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="#C4622D" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M16 5l4 4-4 4" stroke="#C4622D" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="feature-title">Team Management</div>
+        <div class="feature-desc">Create teams, invite members, and assign roles. Everyone knows where they belong and what they own.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="2" y="3" width="18" height="16" rx="1.5" stroke="#C4622D" stroke-width="1.5"/>
+            <path d="M7 2v2M15 2v2M2 9h18" stroke="#C4622D" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M6 13h10M6 16h6" stroke="#C4622D" stroke-width="1.3" stroke-linecap="round" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="feature-title">Project Tracking</div>
+        <div class="feature-desc">Organise work into projects with deadlines and team assignments. Watch progress from creation to completion.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M4 6h14M4 11h10M4 16h7" stroke="#C4622D" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="18" cy="16" r="3" stroke="#C4622D" stroke-width="1.3"/>
+            <path d="M17 16l.8.8 1.4-1.6" stroke="#C4622D" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="feature-title">Task Board</div>
+        <div class="feature-desc">A clean Kanban board sorted by status. Move tasks from To Do → In Progress → Done with a single update.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M11 3v4M11 15v4M3 11h4M15 11h4" stroke="#C4622D" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="11" cy="11" r="4" stroke="#C4622D" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="feature-title">Priority Levels</div>
+        <div class="feature-desc">Flag tasks as Low, Medium, or High priority. Your team always knows what to tackle first — no guesswork.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="2" y="2" width="8" height="8" rx="1" stroke="#C4622D" stroke-width="1.5"/>
+            <rect x="12" y="2" width="8" height="8" rx="1" stroke="#C4622D" stroke-width="1.5" opacity="0.5"/>
+            <rect x="2" y="12" width="8" height="8" rx="1" stroke="#C4622D" stroke-width="1.5" opacity="0.5"/>
+            <rect x="12" y="12" width="8" height="8" rx="1" stroke="#C4622D" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="feature-title">Dashboard Overview</div>
+        <div class="feature-desc">See all your teams, projects, and tasks at a glance. Your personal command centre, always up to date.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M11 2L13.5 8.5H20L14.5 12.5L16.5 19L11 15L5.5 19L7.5 12.5L2 8.5H8.5L11 2Z" stroke="#C4622D" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="feature-title">Role-Based Access</div>
+        <div class="feature-desc">Assign roles like Developer, Designer, and Manager to team members. Structure your workspace with clarity.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How it works ── -->
+  <section class="how-section" id="how">
+    <div class="how-inner">
+      <div class="how-header reveal">
+        <p class="how-eyebrow">Simple by design</p>
+        <h2 class="how-heading">Up and running in <em>four steps</em></h2>
+      </div>
+      <div class="steps-grid reveal-stagger">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-title">Create an Account</div>
+          <div class="step-desc">Register in seconds. No credit card, no noise — just your username and you're in.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-title">Build your Team</div>
+          <div class="step-desc">Create a team, add members, and assign roles. Your workspace takes shape immediately.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-title">Launch a Project</div>
+          <div class="step-desc">Give the project a name, set a deadline, assign it to your team, and you're ready to go.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <div class="step-title">Track Tasks Daily</div>
+          <div class="step-desc">Create tasks, assign them to members, set priorities, and update statuses as work progresses.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pages ── -->
+  <section class="pages-section" id="pages">
+    <div class="pages-header reveal">
+      <p class="section-eyebrow">Explore the app</p>
+      <h2 class="section-heading">Every <em>page</em>, purposeful</h2>
+    </div>
+    <div class="pages-grid reveal-stagger">
+      <a href="/users/register/" class="page-card">
+        <div class="page-card-band"></div>
+        <div class="page-card-body">
+          <div class="page-card-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 2L11 7H16L12 10.5L13.5 15.5L9 12.5L4.5 15.5L6 10.5L2 7H7L9 2Z" stroke="#C4622D" stroke-width="1.3" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="page-card-title">Register</div>
+          <div class="page-card-url">/users/register/</div>
+        </div>
+        <div class="page-card-footer">
+          <span class="page-card-tag tag-free">Free</span>
+          <span class="page-arrow">↗</span>
+        </div>
+      </a>
+      <a href="/users/login/" class="page-card">
+        <div class="page-card-band"></div>
+        <div class="page-card-body">
+          <div class="page-card-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M7 3H3a1 1 0 00-1 1v10a1 1 0 001 1h4M12 5l4 4-4 4M16 9H7" stroke="#C4622D" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="page-card-title">Login</div>
+          <div class="page-card-url">/users/login/</div>
+        </div>
+        <div class="page-card-footer">
+          <span class="page-card-tag tag-auth">Auth</span>
+          <span class="page-arrow">↗</span>
+        </div>
+      </a>
+      <a href="/users/" class="page-card">
+        <div class="page-card-band"></div>
+        <div class="page-card-body">
+          <div class="page-card-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="2" width="6" height="6" rx="0.5" stroke="#C4622D" stroke-width="1.3"/>
+              <rect x="10" y="2" width="6" height="6" rx="0.5" stroke="#C4622D" stroke-width="1.3" opacity="0.5"/>
+              <rect x="2" y="10" width="6" height="6" rx="0.5" stroke="#C4622D" stroke-width="1.3" opacity="0.5"/>
+              <rect x="10" y="10" width="6" height="6" rx="0.5" stroke="#C4622D" stroke-width="1.3"/>
+            </svg>
+          </div>
+          <div class="page-card-title">Dashboard</div>
+          <div class="page-card-url">/users/</div>
+        </div>
+        <div class="page-card-footer">
+          <span class="page-card-tag tag-main">App</span>
+          <span class="page-arrow">↗</span>
+        </div>
+      </a>
+      <a href="/teams/" class="page-card">
+        <div class="page-card-band"></div>
+        <div class="page-card-body">
+          <div class="page-card-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="6" cy="6" r="2.5" stroke="#C4622D" stroke-width="1.3"/>
+              <circle cx="12" cy="6" r="2.5" stroke="#C4622D" stroke-width="1.3" opacity="0.5"/>
+              <path d="M1 16c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="#C4622D" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M12 11c1.5 0 4 .9 4 5" stroke="#C4622D" stroke-width="1.3" stroke-linecap="round" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="page-card-title">Teams</div>
+          <div class="page-card-url">/teams/</div>
+        </div>
+        <div class="page-card-footer">
+          <span class="page-card-tag tag-main">App</span>
+          <span class="page-arrow">↗</span>
+        </div>
+      </a>
+      <a href="/projects/" class="page-card">
+        <div class="page-card-band"></div>
+        <div class="page-card-body">
+          <div class="page-card-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <rect x="2" y="3" width="14" height="12" rx="1" stroke="#C4622D" stroke-width="1.3"/>
+              <path d="M5 2v2M13 2v2M2 7h14" stroke="#C4622D" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M5 10h8M5 13h5" stroke="#C4622D" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="page-card-title">Projects</div>
+          <div class="page-card-url">/projects/</div>
+        </div>
+        <div class="page-card-footer">
+          <span class="page-card-tag tag-main">App</span>
+          <span class="page-arrow">↗</span>
+        </div>
+      </a>
+      <a href="/tasks/" class="page-card">
+        <div class="page-card-band"></div>
+        <div class="page-card-body">
+          <div class="page-card-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M3 5h12M3 9h8M3 13h5" stroke="#C4622D" stroke-width="1.3" stroke-linecap="round"/>
+              <circle cx="15" cy="13" r="2.5" stroke="#C4622D" stroke-width="1.3"/>
+              <path d="M14 13l.7.7 1.3-1.4" stroke="#C4622D" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="page-card-title">Tasks</div>
+          <div class="page-card-url">/tasks/</div>
+        </div>
+        <div class="page-card-footer">
+          <span class="page-card-tag tag-main">App</span>
+          <span class="page-arrow">↗</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta-section">
+    <div class="cta-inner">
+      <div>
+        <p class="cta-eyebrow">Ready to begin?</p>
+        <h2 class="cta-heading">Ship better work,<br><em>together.</em></h2>
+        <p class="cta-sub">Join Vantage and bring your team's work into one clear, focused place — from first task to final delivery.</p>
+      </div>
+      <div class="cta-buttons">
+        <a href="/users/register/" class="btn-cta-primary">
+          <span>Create Free Account</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="/users/login/" class="btn-cta-ghost">Already have an account? Sign in</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <a href="/" class="footer-brand">Van<span>tage</span></a>
+    <nav class="footer-links">
+      <a href="/users/register/">Register</a>
+      <a href="/users/login/">Login</a>
+      <a href="/users/">Dashboard</a>
+      <a href="/teams/">Teams</a>
+      <a href="/projects/">Projects</a>
+      <a href="/tasks/">Tasks</a>
+    </nav>
+    <span class="footer-copy">© 2026 Vantage. All rights reserved.</span>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

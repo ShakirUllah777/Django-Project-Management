@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Task — Vantage</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #F7F3EE;
+      --ink: #1A1612;
+      --rust: #C4622D;
+      --muted: #9A8F85;
+      --line: #DDD5CC;
+      --card: #FFFFFF;
+      --shadow: 0 2px 16px rgba(26,22,18,0.07);
+      --green: #2E7D52;
+      --green-bg: #E8F5EE;
+    }
+
+    body {
+      background-color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--ink);
+      min-height: 100vh;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--cream);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+
+    .nav-links a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--cream); }
+    .nav-links a.active {
+      color: var(--cream);
+      border-bottom: 1px solid var(--rust);
+      padding-bottom: 2px;
+    }
+
+    /* ── Main ── */
+    .main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 52px 48px 80px;
+    }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 44px;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    .breadcrumb a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--rust); }
+    .breadcrumb-sep { font-size: 12px; color: var(--line); }
+    .breadcrumb-cur { font-size: 12px; color: var(--ink); font-weight: 500; }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 56px;
+      align-items: start;
+    }
+
+    /* ── Form panel ── */
+    .form-panel { animation: fadeUp 0.5s ease 0.1s both; }
+
+    .form-header { margin-bottom: 40px; }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 10px;
+    }
+
+    .form-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 300;
+      line-height: 1.1;
+    }
+
+    .form-header h1 em { font-style: italic; color: var(--rust); }
+
+    .form-header p {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* ── Sections ── */
+    .form-section { margin-bottom: 36px; }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--rust);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 22px;
+    }
+
+    /* ── Field ── */
+    .field {
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .field label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .req { color: var(--rust); font-size: 14px; line-height: 1; }
+
+    .field input[type="text"],
+    .field textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      padding: 11px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink);
+      outline: none;
+      resize: none;
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder { color: #C5BAB2; }
+
+    .field input[type="date"] {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      padding: 11px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink);
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+
+    .field input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0.35;
+      cursor: pointer;
+      filter: invert(0.4);
+    }
+
+    .field input[type="date"]:focus::-webkit-calendar-picker-indicator {
+      filter: invert(0) sepia(1) saturate(2) hue-rotate(340deg);
+      opacity: 0.8;
+    }
+
+    /* Animated underline */
+    .field::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--rust);
+      transition: width 0.35s ease;
+    }
+
+    .field:focus-within::after { width: 100%; }
+
+    /* Char counter */
+    .field-foot { display: flex; justify-content: flex-end; margin-top: 5px; }
+    .char-c { font-size: 11px; color: var(--line); transition: color 0.2s; }
+    .char-c.warn { color: var(--rust); }
+
+    /* Custom select */
+    .sel-wrap { position: relative; }
+
+    .sel-wrap select {
+      width: 100%;
+      appearance: none;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line);
+      padding: 11px 32px 11px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .sel-wrap select option { background: var(--card); color: var(--ink); }
+
+    .sel-arrow {
+      position: absolute;
+      right: 0; bottom: 13px;
+      pointer-events: none;
+      color: var(--muted);
+      transition: transform 0.2s, color 0.2s;
+    }
+
+    .sel-wrap:focus-within .sel-arrow { transform: rotate(180deg); color: var(--rust); }
+
+    /* Priority chips */
+    .priority-chips { display: flex; gap: 8px; margin-top: 4px; }
+
+    .p-chip {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+      text-align: center;
+    }
+
+    .p-chip:hover { border-color: var(--muted); color: var(--ink); }
+    .p-chip.on-low    { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+    .p-chip.on-medium { background: #FBF0EA; color: var(--rust); border-color: var(--rust); }
+    .p-chip.on-high   { background: #FDE8E8; color: #C0392B; border-color: #C0392B; }
+
+    /* ── Submit ── */
+    .submit-area {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-top: 8px;
+    }
+
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 16px 36px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--rust);
+      transform: translateX(-100%);
+      transition: transform 0.35s ease;
+    }
+
+    .btn-submit:hover::before { transform: translateX(0); }
+    .btn-submit:hover { transform: translateY(-2px); }
+    .btn-submit span, .btn-submit svg { position: relative; z-index: 1; }
+
+    .btn-cancel {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-cancel:hover { color: var(--ink); border-color: var(--line); }
+
+    /* ── Right panel ── */
+    .right-panel {
+      animation: fadeUp 0.5s ease 0.2s both;
+      position: sticky;
+      top: 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Preview card */
+    .preview-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: border-color 0.3s;
+    }
+
+    .preview-card.live { border-color: var(--rust); }
+
+    .preview-band { height: 3px; background: var(--line); transition: background 0.3s; }
+    .preview-band.low      { background: var(--green); }
+    .preview-band.medium   { background: var(--rust); }
+    .preview-band.high     { background: #C0392B; }
+
+    .preview-inner { padding: 22px 24px 18px; }
+
+    .preview-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .preview-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .p-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.25;
+      flex: 1;
+    }
+
+    .p-title.ph { color: var(--line); font-style: italic; font-size: 16px; }
+
+    .p-priority {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .pri-none     { background: #F2EFEC; color: var(--muted); }
+    .pri-low      { background: var(--green-bg); color: var(--green); }
+    .pri-medium   { background: #FBF0EA; color: var(--rust); }
+    .pri-high     { background: #FDE8E8; color: #C0392B; }
+
+    .preview-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+
+    .preview-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--muted);
+    }
+
+    .preview-row svg { flex-shrink: 0; opacity: 0.55; }
+    .preview-row strong { font-weight: 500; color: var(--ink); }
+    .preview-row.ph-row { color: var(--line); font-style: italic; }
+
+    .p-avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--cream);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--rust);
+      flex-shrink: 0;
+    }
+
+    /* Date chips */
+    .date-chips { display: flex; gap: 8px; }
+
+    .date-chip {
+      flex: 1;
+      background: var(--cream);
+      padding: 7px 10px;
+    }
+
+    .date-chip-lbl {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .date-chip-val { font-size: 11px; font-weight: 400; color: var(--ink); }
+    .date-chip-val.ph { color: var(--line); font-style: italic; }
+
+    .preview-footer {
+      border-top: 1px solid var(--line);
+      padding: 10px 14px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .pf-tag {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      background: #F2EFEC;
+      color: var(--muted);
+    }
+
+    .pf-tag.todo     { background: #F2EFEC; color: var(--muted); }
+
+    /* Tips */
+    .tips-box { background: var(--ink); padding: 22px 24px; }
+
+    .tips-title {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 16px;
+    }
+
+    .tip { display: flex; gap: 12px; margin-bottom: 12px; }
+    .tip:last-child { margin-bottom: 0; }
+    .tip-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--rust); margin-top: 6px; flex-shrink: 0; }
+    .tip-text { font-size: 12px; font-weight: 300; color: var(--muted); line-height: 1.6; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; gap: 48px; }
+      .right-panel { position: static; }
+    }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 0 20px; }
+      .nav-links { display: none; }
+      .main { padding: 36px 20px 60px; }
+      .field-row { grid-template-columns: 1fr; gap: 0; }
+      .priority-chips { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="/" class="brand">Vantage</a>
+    <nav class="nav-links">
+      <a href="/dashboard/">Dashboard</a>
+      <a href="/teams/">Teams</a>
+      <a href="/projects/">Projects</a>
+      <a href="/tasks/" class="active">Tasks</a>
+    </nav>
+  </header>
+
+  <main class="main">
+
+    <div class="breadcrumb">
+      <a href="/tasks/">Tasks</a>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-cur">Create Task</span>
+    </div>
+
+    <div class="layout">
+
+      <!-- ── Left: Form ── -->
+      <div class="form-panel">
+        <div class="form-header">
+          <p class="eyebrow">New Task</p>
+          <h1>Create a <em>Task</em></h1>
+          <p>All fields are required. Assign it to a project and team member to get started.</p>
+        </div>
+
+        <form method="post" id="taskForm">
+          {% csrf_token %}
+
+          <!-- 01 Basics -->
+          <div class="form-section">
+            <div class="section-label">01 — Basics</div>
+
+            <div class="field">
+              <label for="title">Task Title <span class="req">*</span></label>
+              <input type="text" id="title" name="title" placeholder="e.g. Design landing page…" autocomplete="off" maxlength="100" required/>
+              <div class="field-foot"><span class="char-c" id="titleCount">0 / 100</span></div>
+            </div>
+
+            <div class="field">
+              <label for="description">Description <span class="req">*</span></label>
+              <textarea id="description" name="description" rows="4" placeholder="Describe what needs to be done…" maxlength="600" required></textarea>
+              <div class="field-foot"><span class="char-c" id="descCount">0 / 600</span></div>
+            </div>
+          </div>
+
+          <!-- 02 Assignment -->
+          <div class="form-section">
+            <div class="section-label">02 — Assignment</div>
+
+            <div class="field">
+              <label for="project">Project <span class="req">*</span></label>
+              <div class="sel-wrap">
+                <select name="project" id="project" required>
+                  <option value="" disabled selected>Select a project…</option>
+                  {% for project in projects %}
+                  <option value="{{ project.id }}" data-name="{{ project.name }}">{{ project.name }}</option>
+                  {% endfor %}
+                </select>
+                <svg class="sel-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="assigned_to">Assign To <span class="req">*</span></label>
+              <div class="sel-wrap">
+                <select name="assigned_to" id="assigned_to" required>
+                  <option value="" disabled selected>Select a team member…</option>
+                  {% for user in users %}
+                  <option value="{{ user.id }}" data-username="{{ user.username }}">{{ user.username }}</option>
+                  {% endfor %}
+                </select>
+                <svg class="sel-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- 03 Timeline -->
+          <div class="form-section">
+            <div class="section-label">03 — Timeline</div>
+            <div class="field-row">
+              <div class="field">
+                <label for="start_date">Start Date <span class="req">*</span></label>
+                <input type="date" id="start_date" name="start_date" required/>
+              </div>
+              <div class="field">
+                <label for="due_date">Due Date <span class="req">*</span></label>
+                <input type="date" id="due_date" name="due_date" required/>
+              </div>
+            </div>
+          </div>
+
+          <!-- 04 Priority -->
+          <div class="form-section">
+            <div class="section-label">04 — Priority</div>
+            <div class="field" style="border-bottom:none;">
+              <label>Priority Level <span class="req">*</span></label>
+              <div class="priority-chips" id="priorityChips">
+                <button type="button" class="p-chip" data-val="low">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="display:inline;margin-right:5px;vertical-align:middle;">
+                    <circle cx="5" cy="5" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+                  </svg>
+                  Low
+                </button>
+                <button type="button" class="p-chip" data-val="medium">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="display:inline;margin-right:5px;vertical-align:middle;">
+                    <path d="M1 5h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M1 2.5h8M1 7.5h8" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+                  </svg>
+                  Medium
+                </button>
+                <button type="button" class="p-chip" data-val="high">
+                  <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="display:inline;margin-right:5px;vertical-align:middle;">
+                    <path d="M5 1l1.5 3h3L7 6l1 3L5 7.5 2 9l1-3L.5 4h3z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+                  </svg>
+                  High
+                </button>
+              </div>
+              <input type="hidden" name="priority" id="priorityInput" required/>
+            </div>
+          </div>
+
+          <div class="submit-area">
+            <button type="submit" class="btn-submit">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <span>Create Task</span>
+            </button>
+            <a href="/tasks/" class="btn-cancel">Cancel</a>
+          </div>
+        </form>
+      </div>
+
+      <!-- ── Right: Preview + tips ── -->
+      <div class="right-panel">
+
+        <div class="preview-card" id="previewCard">
+          <div class="preview-band" id="previewBand"></div>
+          <div class="preview-inner">
+            <div class="preview-eyebrow">Live Preview</div>
+
+            <div class="preview-top">
+              <div class="p-title ph" id="pTitle">Task title…</div>
+              <span class="p-priority pri-none" id="pPriority">Priority</span>
+            </div>
+
+            <div class="preview-rows">
+              <div class="preview-row ph-row" id="pProject">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                  <rect x="1" y="2" width="10" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M4 1v2M8 1v2M1 5h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+                No project selected
+              </div>
+              <div class="preview-row ph-row" id="pAssigned">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+                  <circle cx="6" cy="4" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M1 11c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+                Unassigned
+              </div>
+            </div>
+
+            <div class="date-chips">
+              <div class="date-chip">
+                <div class="date-chip-lbl">Start</div>
+                <div class="date-chip-val ph" id="pStart">—</div>
+              </div>
+              <div class="date-chip">
+                <div class="date-chip-lbl">Due</div>
+                <div class="date-chip-val ph" id="pDue">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview-footer">
+            <span class="pf-tag todo">To Do</span>
+            <span class="pf-tag" id="pPriTag" style="display:none;"></span>
+          </div>
+        </div>
+
+        <div class="tips-box">
+          <div class="tips-title">Tips</div>
+          <div class="tip">
+            <div class="tip-dot"></div>
+            <div class="tip-text">Write task titles as clear action phrases — "Design login screen" beats "Login".</div>
+          </div>
+          <div class="tip">
+            <div class="tip-dot"></div>
+            <div class="tip-text">Set High priority only for blockers — it keeps the board meaningful for your team.</div>
+          </div>
+          <div class="tip">
+            <div class="tip-dot"></div>
+            <div class="tip-text">Assign every task to one owner. Shared ownership often means no ownership.</div>
+          </div>
+          <div class="tip">
+            <div class="tip-dot"></div>
+            <div class="tip-text">Due dates keep work honest — even a rough estimate is better than none.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const titleInput = document.getElementById('title');
+    const descInput  = document.getElementById('description');
+    const projectSel = document.getElementById('project');
+    const assignSel  = document.getElementById('assigned_to');
+    const startInput = document.getElementById('start_date');
+    const dueInput   = document.getElementById('due_date');
+    const chips      = document.querySelectorAll('.p-chip');
+
+    const previewCard = document.getElementById('previewCard');
+    const previewBand = document.getElementById('previewBand');
+    const pTitle      = document.getElementById('pTitle');
+    const pPriority   = document.getElementById('pPriority');
+    const pProject    = document.getElementById('pProject');
+    const pAssigned   = document.getElementById('pAssigned');
+    const pStart      = document.getElementById('pStart');
+    const pDue        = document.getElementById('pDue');
+    const pPriTag     = document.getElementById('pPriTag');
+
+    let currentPriority = '';
+
+    const priConfig = {
+      low:    { label: 'Low',    cls: 'pri-low',    band: 'low',    tagBg: '#E8F5EE', tagColor: '#2E7D52' },
+      medium: { label: 'Medium', cls: 'pri-medium', band: 'medium', tagBg: '#FBF0EA', tagColor: '#C4622D' },
+      high:   { label: 'High',   cls: 'pri-high',   band: 'high',   tagBg: '#FDE8E8', tagColor: '#C0392B' },
+    };
+
+    function fmtDate(val) {
+      if (!val) return null;
+      return new Date(val + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function update() {
+      const title    = titleInput.value.trim();
+      const projOpt  = projectSel.options[projectSel.selectedIndex];
+      const projName = projectSel.value ? projOpt.dataset.name : null;
+      const userOpt  = assignSel.options[assignSel.selectedIndex];
+      const username = assignSel.value ? userOpt.dataset.username : null;
+      const sf       = fmtDate(startInput.value);
+      const df       = fmtDate(dueInput.value);
+      const hasAny   = title || projName;
+
+      // Title
+      if (title) {
+        pTitle.textContent = title;
+        pTitle.classList.remove('ph');
+      } else {
+        pTitle.textContent = 'Task title…';
+        pTitle.classList.add('ph');
+      }
+
+      // Project row
+      if (projName) {
+        pProject.innerHTML = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M4 1v2M8 1v2M1 5h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><strong>${projName}</strong>`;
+        pProject.classList.remove('ph-row');
+      } else {
+        pProject.innerHTML = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="1" y="2" width="10" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M4 1v2M8 1v2M1 5h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>No project selected`;
+        pProject.classList.add('ph-row');
+      }
+
+      // Assigned row
+      if (username) {
+        pAssigned.innerHTML = `<div class="p-avatar">${username[0].toUpperCase()}</div>${username}`;
+        pAssigned.classList.remove('ph-row');
+      } else {
+        pAssigned.innerHTML = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="4" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 11c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Unassigned`;
+        pAssigned.classList.add('ph-row');
+      }
+
+      // Dates
+      pStart.textContent = sf || '—';
+      pStart.classList.toggle('ph', !sf);
+      pDue.textContent = df || '—';
+      pDue.classList.toggle('ph', !df);
+
+      // Priority badge
+      if (currentPriority && priConfig[currentPriority]) {
+        const cfg = priConfig[currentPriority];
+        pPriority.textContent = cfg.label;
+        pPriority.className = `p-priority ${cfg.cls}`;
+        previewBand.className = `preview-band ${cfg.band}`;
+        pPriTag.textContent = cfg.label;
+        pPriTag.style.display = '';
+        pPriTag.style.background = cfg.tagBg;
+        pPriTag.style.color = cfg.tagColor;
+      } else {
+        pPriority.textContent = 'Priority';
+        pPriority.className = 'p-priority pri-none';
+        previewBand.className = 'preview-band';
+        pPriTag.style.display = 'none';
+      }
+
+      // Live card border
+      previewCard.classList.toggle('live', !!hasAny);
+    }
+
+    // Events
+    titleInput.addEventListener('input', () => {
+      const len = titleInput.value.length;
+      const el = document.getElementById('titleCount');
+      el.textContent = `${len} / 100`;
+      el.classList.toggle('warn', len > 80);
+      update();
+    });
+
+    descInput.addEventListener('input', () => {
+      const len = descInput.value.length;
+      const el = document.getElementById('descCount');
+      el.textContent = `${len} / 600`;
+      el.classList.toggle('warn', len > 500);
+    });
+
+    projectSel.addEventListener('change', update);
+    assignSel.addEventListener('change', update);
+    startInput.addEventListener('change', () => { dueInput.min = startInput.value; update(); });
+    dueInput.addEventListener('change', update);
+
+    // Priority chips
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('on-low', 'on-medium', 'on-high'));
+        currentPriority = chip.dataset.val;
+        chip.classList.add(`on-${currentPriority}`);
+        document.getElementById('priorityInput').value = currentPriority;
+        update();
+      });
+    });
+  </script>
+
+</body>
+</html>
